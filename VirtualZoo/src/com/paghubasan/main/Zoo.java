@@ -17,7 +17,7 @@ public class Zoo {
 	private static List<CrocodileCage> crocodiles = new ArrayList<>();
 	private static List<EagleCage> eagles = new ArrayList<>();
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws VirtualZooException {
 		displayMenu();
 	}
 	
@@ -56,6 +56,10 @@ public class Zoo {
 						break;
 				}
 				
+			} catch (VirtualZooException ex) {
+				System.out.println(ex.getMessage());
+			} catch (NumberFormatException ex) {
+				System.out.println("You must enter a numeric number. Please try again.\n");
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				input.nextLine();
@@ -64,7 +68,7 @@ public class Zoo {
 		
 	}
 	
-	private static void createNewCage() {
+	private static void createNewCage() throws NumberFormatException, VirtualZooException {
 		printCageTypes();
 		int cageType = Integer.parseInt(input.nextLine());
 		int lionCageNo, crocoCageNo, eagleCageNo;
@@ -96,11 +100,11 @@ public class Zoo {
 				System.out.println(String.format("%s created successfully!\n", eagleCage.getCageName()));
 				break;
 			default:
-				System.out.println("Please select a valid cage type. Please try again.\n");
+				throw new VirtualZooException("Please select a valid cage type. Please try again.\n");
 		}
 	}
 
-	private static void addAnimalToCage() {
+	private static void addAnimalToCage() throws VirtualZooException {
 		printAnimalType();
 		int animalType = Integer.parseInt(input.nextLine());
 		int lionCageNo, crocoCageNo, eagleCageNo;
@@ -134,10 +138,11 @@ public class Zoo {
 							
 							lionCage.totalAnimals();
 						} else {
-							System.out.println("You cannot add "+name+ " to " + lionCage.getCageName() + ". The cage is full.\n");
+							//System.out.println("You cannot add "+name+ " to " + lionCage.getCageName() + ". The cage is full.\n");
+							throw new VirtualZooException(String.format("You cannot add %s to %s. The cage is full.\n", name, lionCage.getCageName()));
 						}
 					} else {
-						System.out.println("Please enter a valid cage number. Please try again.\n");
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
 					}
 				}
 				break;
@@ -168,10 +173,11 @@ public class Zoo {
 							
 							crocodileCage.totalAnimals();
 						} else {
-							System.out.println("You cannot add "+name+ " to " + crocodileCage.getCageName() + ". The cage is full.\n");
+							//System.out.println("You cannot add "+name+ " to " + crocodileCage.getCageName() + ". The cage is full.\n");
+							throw new VirtualZooException(String.format("You cannot add %s to %s. The cage is full.\n", name, crocodileCage.getCageName()));
 						}
 					} else {
-						System.out.println("Please enter a valid cage number. Please try again.\n");
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
 					}
 				}
 				break;
@@ -202,20 +208,21 @@ public class Zoo {
 							
 							eagleCage.totalAnimals();
 						} else {
-							System.out.println("You cannot add "+name+ " to " + eagleCage.getCageName() + ". The cage is full.\n");
+							//System.out.println("You cannot add "+name+ " to " + eagleCage.getCageName() + ". The cage is full.\n");
+							throw new VirtualZooException(String.format("You cannot add %s to %s. The cage is full.\n", name, eagleCage.getCageName()));
 						}
 					} else {
-						System.out.println("Please enter a valid cage number. Please try again.\n");
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
 					}
 				
 				}
 				break;
 			default:
-				System.out.println("Please select a valid animal type. Please try again.\n");
+				throw new VirtualZooException("Please select a valid animal type. Please try again.\n");
 		}
 	}
 	
-	private static void teaseAnimal() {
+	private static void teaseAnimal() throws VirtualZooException {
 		printAnimalToTease();
 		int animalToTease = Integer.parseInt(input.nextLine());
 		int lionCageNo, crocoCageNo, eagleCageNo;
@@ -234,7 +241,7 @@ public class Zoo {
 											.findFirst()
 											.orElse(null);
 					
-					if(lionCage.cageSize() > 0) {
+					if(lionCage != null && lionCage.cageSize() > 0) {
 						System.out.println("Which one to tease: ");
 						lionCage.getAnimals().entrySet().forEach((lion) -> System.out.println(String.format("[%d] %s",lion.getValue().getAnimalNo(),lion.getValue().getName())));
 						String name = input.nextLine();
@@ -247,11 +254,11 @@ public class Zoo {
 						if(lion != null) {
 							lion.tease();
 						} else {
-							System.out.println("Please enter a valid animal name. Please try again.\n");
+							throw new VirtualZooException("Please enter a valid animal name. Please try again.\n");
 						}
 						
 					} else {
-						System.out.println("Please enter a valid cage number. Please try again.\n");
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
 					}
 				}
 				break;
@@ -268,7 +275,7 @@ public class Zoo {
 															.findFirst()
 															.orElse(null);
 					
-					if (crocodileCage.cageSize() > 0) {
+					if (crocodileCage != null && crocodileCage.cageSize() > 0) {
 						System.out.println("Which one to tease: ");
 						crocodileCage.getAnimals().entrySet().forEach(croco -> System.out.println(String.format("[%d] %s",croco.getValue().getAnimalNo(),croco.getValue().getName())));
 						String name = input.nextLine();
@@ -281,10 +288,10 @@ public class Zoo {
 						if(crocodile != null) {
 							crocodile.tease();
 						} else {
-							System.out.println("Please enter a valid animal name. Please try again.\n");
+							throw new VirtualZooException("Please enter a valid animal name. Please try again.\n");
 						}
 					} else {
-						System.out.println("Please enter a valid cage number. Please try again.\n");
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
 					}
 				}
 				break;
@@ -300,7 +307,8 @@ public class Zoo {
 												.filter(e -> e.getCageNumber() == eagleCageNo)
 												.findFirst()
 												.orElse(null);
-					if (eagleCage.cageSize() > 0) {
+					
+					if (eagleCage != null && eagleCage.cageSize() > 0) {
 						System.out.println("Which one to tease: ");
 						eagleCage.getAnimals().entrySet().forEach(eagle -> System.out.println(String.format("[%d] %s",eagle.getValue().getAnimalNo(),eagle.getValue().getName())));
 						String name = input.nextLine();
@@ -312,10 +320,10 @@ public class Zoo {
 						if(eagle != null) {
 							eagle.tease();
 						} else {
-							System.out.println("Please enter a valid animal name. Please try again.\n");
+							throw new VirtualZooException("Please enter a valid animal name. Please try again.\n");
 						}
 					} else {
-						System.out.println("Please enter a valid cage number. Please try again.\n");
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
 					}
 				}
 				break;
