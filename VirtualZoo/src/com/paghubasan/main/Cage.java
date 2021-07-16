@@ -1,25 +1,14 @@
 package com.paghubasan.main;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Cage {
-	private int cageNumber;
-	private List<Animal> animals = new ArrayList<>();
-	
-	public boolean addAnimal(Animal animal) {
-		return animals.add(animal);
-	}
-	
-	public int animalCount() {
-		return animals.size();
-	}
-	
-	public void setCageNumber(int cageNum) {
-		cageNumber = cageNum;
-	}
-	
-	public int getCageNumber() {
-		return cageNumber;
-	}
+public interface Cage {
+	public void setCageNumber(int number);
+	public int getCageNumber();
+	public String getCageName();
+	public Animal addAnimal(Animal animal);
+	public void totalAnimals();
+	public int getCageNoSelection();
+	public int cageSize();
+	public List<Animal> getAnimals();
 }

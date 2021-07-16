@@ -1,13 +1,10 @@
 package com.paghubasan.main;
 
-public class Animal {
-	private String name;
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getName() {
-		return name;
-	}
+public abstract class Animal {
+
+	public abstract void setName(String name);
+	public abstract String getName();
+	public abstract void eat();
+	public abstract void tease();
+	public abstract int getAnimalNo();
 }

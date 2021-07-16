@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.paghubasan.animals.Crocodile;
+import com.paghubasan.animals.Eagle;
+import com.paghubasan.animals.Lion;
+import com.paghubasan.cages.*;
+
 public class Zoo {
 	
 	private static Scanner input = new Scanner(System.in);
-	private static int choice;
-	private static List<Cage> cages = new ArrayList<>();
+	private static List<LionCage> lions = new ArrayList<>();
+	private static List<CrocodileCage> crocodiles = new ArrayList<>();
+	private static List<EagleCage> eagles = new ArrayList<>();
 	
 	public static void main(String[] args) {
 		displayMenu();
@@ -16,14 +22,15 @@ public class Zoo {
 	
 	public static void displayMenu() {
 		boolean isExit = false;
-		
+		int choice;
 		do {
 			System.out.println("*******WELCOME TO VIRTUAL ZOO*******");
-			System.out.println("Total number of cages = " + cages.size());
+			System.out.println("Total number of cages = " + totalCages());
 			System.out.println();
 			System.out.println("Please select a menu: ");
 			System.out.println("[1] Add Animal to a Cage");
 			System.out.println("[2] Create New Cage");
+			System.out.println("[3] Tease Animal");
 			System.out.println("[8] Show Zoo");
 			System.out.println("[9] Exit Zoo");
 			try {
@@ -35,6 +42,9 @@ public class Zoo {
 						break;
 					case 2:
 						createNewCage();
+						break;
+					case 3:
+						teaseAnimal();
 						break;
 					case 8:
 						showZoo();
@@ -54,56 +64,297 @@ public class Zoo {
 	}
 	
 	private static void createNewCage() {
-		if (cages.size() < 2) {
-			Cage cage = new Cage();
-			System.out.println("Enter Cage No. ");
-			int cageNum = Integer.parseInt(input.nextLine());
-			cage.setCageNumber(cageNum);
-			cages.add(cage);
-			System.out.println("Cage created successfully!\n");
-		} else {
-			System.out.println("The zoo already has a maximum of 2 cages. No new cage can be added.\n");
+		printCageTypes();
+		int cageType = Integer.parseInt(input.nextLine());
+		int lionCageNo, crocoCageNo, eagleCageNo;
+		
+		switch(cageType) {
+			case 1:
+				LionCage lionCage = new LionCage();
+				System.out.println("Enter Cage No. ");
+				lionCageNo = Integer.parseInt(input.nextLine());
+				lionCage.setCageNumber(lionCageNo);
+				lions.add(lionCage);
+				System.out.println(String.format("%s created successfully!\n", lionCage.getCageName()));
+				break;
+			case 2:
+				CrocodileCage crocodileCage = new CrocodileCage();
+				System.out.println("Enter Cage No. ");
+				crocoCageNo = Integer.parseInt(input.nextLine());
+				crocodileCage.setCageNumber(crocoCageNo);
+				crocodiles.add(crocodileCage);
+				System.out.println(String.format("%s created successfully!\n", crocodileCage.getCageName()));
+				break;
+				
+			case 3: 
+				EagleCage eagleCage = new EagleCage();
+				System.out.println("Enter Cage No. ");
+				eagleCageNo = Integer.parseInt(input.nextLine());
+				eagleCage.setCageNumber(eagleCageNo);
+				eagles.add(eagleCage);
+				System.out.println(String.format("%s created successfully!\n", eagleCage.getCageName()));
+				break;
+			default:
+				System.out.println("Please select a valid cage type. Please try again.\n");
 		}
 	}
 
 	private static void addAnimalToCage() {
-		if (cages.size() == 0) {
-			System.out.println("No cage created yet. Please create a new cage.\n");
-		} else {
-			cages.forEach(c -> System.out.println(c.getCageNumber()));
-			System.out.println("Enter Cage No. ");
-			int cageNo = Integer.parseInt(input.nextLine());
-			
-			Cage cage = cages.stream()
-					.filter(c -> c.getCageNumber() == cageNo)
-					.findFirst()
-					.orElse(null);
-			
-			if (cage != null) {
-				System.out.println("Please enter animal's name: ");
-				String name = input.nextLine();
-				
-				if (!name.isEmpty()) {
-					Animal animal = new Animal();
-					animal.setName(name);
-					if (cage.animalCount() < 2) {
-						if (cage.addAnimal(animal))
-							System.out.println(String.format("%s is added to cage %d.\n", animal.getName(), cage.getCageNumber()));
-					} else {
-						System.out.println("The cage is is full cannot add new animal.\n");
-					}
+		printAnimalType();
+		int animalType = Integer.parseInt(input.nextLine());
+		int lionCageNo, crocoCageNo, eagleCageNo;
+		
+		switch(animalType) {
+			case 1:
+				if (lions.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
 				} else {
-					System.out.println("You have entered invalid name. Please try again.\n");
+					System.out.println("Please select a cage: ");
+					lions.forEach(lion -> System.out.println(String.format("[%d] Cage No. %d", lion.getCageNoSelection(),lion.getCageNumber())));
+					lionCageNo = Integer.parseInt(input.nextLine());
+					
+					LionCage lionCage = lions.stream()
+										.filter(c -> c.getCageNumber() == lionCageNo)
+										.findFirst()
+										.orElse(null);
+					
+					if (lionCage != null) {
+						System.out.println("Please enter animal's name: ");
+						String name = input.nextLine();
+						
+						if (lionCage.cageSize() < 2) {
+							
+							Animal lion = new Lion();
+							lion.setName(name);
+							
+							lionCage.addAnimal(lion);
+							
+							System.out.println(String.format("Added %s to %s.\n", lion.getName(), lionCage.getCageName()));
+							
+							lionCage.totalAnimals();
+						} else {
+							System.out.println("You cannot add "+name+ " to " + lionCage.getCageName() + ". The cage is full.\n");
+						}
+					} else {
+						System.out.println("Please enter a valid cage number. Please try again.\n");
+					}
 				}
-			} else {
-				System.out.println("You have entered an invalid cage no. Please ensure the cage is created.\n ");
-			}
-			
+				break;
+			case 2:
+				if (crocodiles.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
+				} else {
+					System.out.println("Please select a cage: ");
+					crocodiles.forEach(crocodile -> System.out.println(String.format("[%d] Cage No. %d", crocodile.getCageNoSelection(),crocodile.getCageNumber())));
+					crocoCageNo = Integer.parseInt(input.nextLine());
+					
+					CrocodileCage crocodileCage = crocodiles.stream()
+							.filter(c -> c.getCageNumber() == crocoCageNo)
+							.findFirst()
+							.orElse(null);
+					
+					if (crocodileCage != null) {
+						System.out.println("Please enter animal's name: ");
+						String name = input.nextLine();
+						
+						if (crocodileCage.cageSize() < 4) {
+							Animal crocodile = new Crocodile();
+							crocodile.setName(name);
+							
+							crocodileCage.addAnimal(crocodile);
+							
+							System.out.println(String.format("Added %s to %s.\n", crocodile.getName(), crocodileCage.getCageName()));
+							
+							crocodileCage.totalAnimals();
+						} else {
+							System.out.println("You cannot add "+name+ " to " + crocodileCage.getCageName() + ". The cage is full.\n");
+						}
+					} else {
+						System.out.println("Please enter a valid cage number. Please try again.\n");
+					}
+				}
+				break;
+			case 3:
+				if (eagles.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
+				} else {
+					System.out.println("Please select a cage: ");
+					eagles.forEach(eagle -> System.out.println(String.format("[%d] Cage No. %d", eagle.getCageNoSelection(),eagle.getCageNumber())));
+					eagleCageNo = Integer.parseInt(input.nextLine());
+					
+					EagleCage eagleCage = eagles.stream()
+							.filter(e -> e.getCageNumber() == eagleCageNo)
+							.findFirst()
+							.orElse(null);
+					
+					if (eagleCage != null) {
+						System.out.println("Please enter animal's name: ");
+						String name = input.nextLine();
+						
+						if (eagleCage.cageSize() < 5) {
+							Animal eagle = new Eagle();
+							eagle.setName(name);
+							
+							eagleCage.addAnimal(eagle);
+							
+							System.out.println(String.format("Added %s to %s.\n", eagle.getName(), eagleCage.getCageName()));
+							
+							eagleCage.totalAnimals();
+						} else {
+							System.out.println("You cannot add "+name+ " to " + eagleCage.getCageName() + ". The cage is full.\n");
+						}
+					} else {
+						System.out.println("Please enter a valid cage number. Please try again.\n");
+					}
+				
+				}
+				break;
+			default:
+				System.out.println("Please select a valid animal type. Please try again.\n");
+		}
+	}
+	
+	private static void teaseAnimal() {
+		printAnimalToTease();
+		int animalToTease = Integer.parseInt(input.nextLine());
+		int lionCageNo, crocoCageNo, eagleCageNo;
+		
+		switch(animalToTease) {
+			case 1:
+				if (lions.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
+				} else {
+					System.out.println("Please select a cage: ");
+					lions.forEach(lion -> System.out.println(String.format("[%d] Cage No. %d", lion.getCageNoSelection(),lion.getCageNumber())));
+					lionCageNo = Integer.parseInt(input.nextLine());
+					
+					LionCage lionCage = lions.stream()
+											.filter(l -> l.getCageNumber() == lionCageNo)
+											.findFirst()
+											.orElse(null);
+					
+					if(lionCage.cageSize() > 0) {
+						System.out.println("Which one to tease: ");
+						lionCage.getAnimals().forEach(lion -> System.out.println(String.format("[%d] %s",lion.getAnimalNo(),lion.getName())));
+						String name = input.nextLine();
+						
+						Animal lion = lionCage.getAnimals().stream()
+														.filter(lionTease -> lionTease.getName().equalsIgnoreCase(name))
+														.findFirst()
+														.orElse(null);
+						
+						if(lion != null) {
+							lion.tease();
+						} else {
+							System.out.println("Please enter a valid animal name. Please try again.\n");
+						}
+						
+					} else {
+						System.out.println("Please enter a valid cage number. Please try again.\n");
+					}
+				}
+				break;
+			case 2:
+				if (crocodiles.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
+				} else {
+					System.out.println("Please select a cage: ");
+					crocodiles.forEach(crocodile -> System.out.println(String.format("[%d] Cage No. %d", crocodile.getCageNoSelection(),crocodile.getCageNumber())));
+					crocoCageNo = Integer.parseInt(input.nextLine());
+					
+					CrocodileCage crocodileCage = crocodiles.stream()
+															.filter(c -> c.getCageNumber() == crocoCageNo)
+															.findFirst()
+															.orElse(null);
+					
+					if (crocodileCage != null) {
+						System.out.println("Which one to tease: ");
+						crocodileCage.getAnimals().forEach(croco -> System.out.println(String.format("[%d] %s",croco.getAnimalNo(),croco.getName())));
+						String name = input.nextLine();
+						
+						Animal crocodile = crocodileCage.getAnimals().stream()
+																	.filter(crocoTease -> crocoTease.getName().equalsIgnoreCase(name))
+																	.findFirst()
+																	.orElse(null);
+						
+						if(crocodile != null) {
+							crocodile.tease();
+						} else {
+							System.out.println("Please enter a valid animal name. Please try again.\n");
+						}
+					} else {
+						System.out.println("Please enter a valid cage number. Please try again.\n");
+					}
+				}
+				break;
+			case 3:
+				if (eagles.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
+				} else {
+					System.out.println("Please select a cage: ");
+					eagles.forEach(eagle -> System.out.println(String.format("[%d] Cage No. %d", eagle.getCageNoSelection(),eagle.getCageNumber())));
+					eagleCageNo = Integer.parseInt(input.nextLine());
+					
+					EagleCage eagleCage = eagles.stream()
+												.filter(e -> e.getCageNumber() == eagleCageNo)
+												.findFirst()
+												.orElse(null);
+					if (eagleCage != null) {
+						System.out.println("Which one to tease: ");
+						eagleCage.getAnimals().forEach(eagle -> System.out.println(String.format("[%d] %s",eagle.getAnimalNo(),eagle.getName())));
+						String name = input.nextLine();
+						
+						Animal eagle = eagleCage.getAnimals().stream()
+															.filter(eagleTease -> eagleTease.getName().equalsIgnoreCase(name))
+															.findFirst()
+															.orElse(null);
+						if(eagle != null) {
+							eagle.tease();
+						} else {
+							System.out.println("Please enter a valid animal name. Please try again.\n");
+						}
+					} else {
+						System.out.println("Please enter a valid cage number. Please try again.\n");
+					}
+				}
+				break;
+			default:
+					
 		}
 	}
 	
 	private static void showZoo() {
-		cages.forEach(cage -> System.out.printf("Cage %d has %d animal(s).\n", cage.getCageNumber(), cage.animalCount()));
-		System.out.println(" ");
+		if (totalCages() == 0) {
+			System.out.println("Nothing to show. The zoo has no cage and no animals.\n");
+		} else {
+			lions.forEach(lion -> lion.totalAnimals());
+			crocodiles.forEach(croco -> croco.totalAnimals());
+			eagles.forEach(eagle -> eagle.totalAnimals());
+		}
+	}
+	
+	private static void printCageTypes() {
+		System.out.println("Please select cage type: ");
+		System.out.println("[1] Lion's Cage");
+		System.out.println("[2] Crocodile Cage");
+		System.out.println("[3] Eagle Cage");
+	}
+	
+	private static void printAnimalType() {
+		System.out.println("Please select an animal to add: ");
+		System.out.println("[1] Lion");
+		System.out.println("[2] Crocodile");
+		System.out.println("[3] Eagle");
+	}
+	
+	private static void printAnimalToTease() {
+		System.out.println("Please select an animal to tease: ");
+		System.out.println("[1] Lion");
+		System.out.println("[2] Crocodile");
+		System.out.println("[3] Eagle");
+	}
+	
+	private static int totalCages() {
+		return lions.size() + crocodiles.size() + eagles.size();
 	}
 }
