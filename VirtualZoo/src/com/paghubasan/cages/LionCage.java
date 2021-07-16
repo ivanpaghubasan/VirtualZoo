@@ -1,7 +1,7 @@
 package com.paghubasan.cages;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.paghubasan.animals.Lion;
 import com.paghubasan.main.Animal;
@@ -12,7 +12,7 @@ public class LionCage implements Cage {
 	private int number;
 	private int cageSelectionNo;
 	private static int cageCounter = 1;
-	private List<Lion> lions = new ArrayList<>();
+	private Map<String, Lion> lions = new HashMap<>();
 	
 	public LionCage() {
 		this.name = "Lion's Cage";
@@ -25,17 +25,14 @@ public class LionCage implements Cage {
 	}
 
 	@Override
-	public Animal addAnimal(Animal animal) {
-		if (animal instanceof Lion) {
-			lions.add((Lion)animal);
-		}
-		
+	public <T> T addAnimal(T animal) {
+		lions.put(((Lion)animal).getName(), (Lion)animal);
 		return animal;
 	}
 	
 	@Override
-	public List<Animal> getAnimals(){
-		List<Animal> animals = new ArrayList<>(lions);
+	public Map<String, Animal> getAnimals(){
+		Map<String, Animal> animals = new HashMap<>(lions);
 		return animals;
 	}
 	

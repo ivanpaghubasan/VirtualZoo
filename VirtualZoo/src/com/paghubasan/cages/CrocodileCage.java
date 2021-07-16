@@ -1,7 +1,9 @@
 package com.paghubasan.cages;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.paghubasan.animals.Crocodile;
 import com.paghubasan.main.Animal;
@@ -13,7 +15,7 @@ public class CrocodileCage implements Cage {
 	private int number;
 	private int cageSelectionNo;
 	private static int cageCounter = 1;
-	private List<Crocodile> crocodiles = new ArrayList<>();
+	private Map<String, Crocodile> crocodiles = new HashMap<>();
 	
 	public CrocodileCage() {
 		this.name = "Crocodile's Cage";
@@ -38,12 +40,9 @@ public class CrocodileCage implements Cage {
 	}
 
 	@Override
-	public Animal addAnimal(Animal animal) {
-		// TODO Auto-generated method stub
-		if (animal instanceof Crocodile) {
-			crocodiles.add((Crocodile)animal);
-		}
-		return null;
+	public <T> T addAnimal(T animal) {
+		crocodiles.put(((Crocodile)animal).getName(), (Crocodile)animal);
+		return animal;
 	}
 
 	@Override
@@ -64,9 +63,9 @@ public class CrocodileCage implements Cage {
 	}
 
 	@Override
-	public List<Animal> getAnimals() {
+	public Map<String, Animal> getAnimals() {
 		// TODO Auto-generated method stub
-		List<Animal> animals = new ArrayList<>(crocodiles);
+		Map<String, Animal> animals = new HashMap<>(crocodiles);
 		return animals;
 	}
 

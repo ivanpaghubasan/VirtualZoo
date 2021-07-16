@@ -1,14 +1,17 @@
 package com.paghubasan.main;
 
 import java.util.List;
+import java.util.Map;
+
+import com.paghubasan.animals.Lion;
 
 public interface Cage {
 	public void setCageNumber(int number);
 	public int getCageNumber();
 	public String getCageName();
-	public Animal addAnimal(Animal animal);
+	public <T> T addAnimal(T t);
 	public void totalAnimals();
 	public int getCageNoSelection();
 	public int cageSize();
-	public List<Animal> getAnimals();
+	public Map<String, Animal> getAnimals();
 }

@@ -2,6 +2,7 @@ package com.paghubasan.main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 import com.paghubasan.animals.Crocodile;
@@ -124,7 +125,7 @@ public class Zoo {
 						
 						if (lionCage.cageSize() < 2) {
 							
-							Animal lion = new Lion();
+							Lion lion = new Lion();
 							lion.setName(name);
 							
 							lionCage.addAnimal(lion);
@@ -158,7 +159,7 @@ public class Zoo {
 						String name = input.nextLine();
 						
 						if (crocodileCage.cageSize() < 4) {
-							Animal crocodile = new Crocodile();
+							Crocodile crocodile = new Crocodile();
 							crocodile.setName(name);
 							
 							crocodileCage.addAnimal(crocodile);
@@ -192,7 +193,7 @@ public class Zoo {
 						String name = input.nextLine();
 						
 						if (eagleCage.cageSize() < 5) {
-							Animal eagle = new Eagle();
+							Eagle eagle = new Eagle();
 							eagle.setName(name);
 							
 							eagleCage.addAnimal(eagle);
@@ -235,11 +236,11 @@ public class Zoo {
 					
 					if(lionCage.cageSize() > 0) {
 						System.out.println("Which one to tease: ");
-						lionCage.getAnimals().forEach(lion -> System.out.println(String.format("[%d] %s",lion.getAnimalNo(),lion.getName())));
+						lionCage.getAnimals().entrySet().forEach((lion) -> System.out.println(String.format("[%d] %s",lion.getValue().getAnimalNo(),lion.getValue().getName())));
 						String name = input.nextLine();
 						
-						Animal lion = lionCage.getAnimals().stream()
-														.filter(lionTease -> lionTease.getName().equalsIgnoreCase(name))
+						Lion lion = (Lion)lionCage.getAnimals().entrySet().stream()
+														.filter(lionTease -> lionTease.getKey().equalsIgnoreCase(name))
 														.findFirst()
 														.orElse(null);
 						
@@ -267,13 +268,13 @@ public class Zoo {
 															.findFirst()
 															.orElse(null);
 					
-					if (crocodileCage != null) {
+					if (crocodileCage.cageSize() > 0) {
 						System.out.println("Which one to tease: ");
-						crocodileCage.getAnimals().forEach(croco -> System.out.println(String.format("[%d] %s",croco.getAnimalNo(),croco.getName())));
+						crocodileCage.getAnimals().entrySet().forEach(croco -> System.out.println(String.format("[%d] %s",croco.getValue().getAnimalNo(),croco.getValue().getName())));
 						String name = input.nextLine();
 						
-						Animal crocodile = crocodileCage.getAnimals().stream()
-																	.filter(crocoTease -> crocoTease.getName().equalsIgnoreCase(name))
+						Crocodile crocodile = (Crocodile)crocodileCage.getAnimals().entrySet().stream()
+																	.filter(crocoTease -> crocoTease.getKey().equalsIgnoreCase(name))
 																	.findFirst()
 																	.orElse(null);
 						
@@ -299,13 +300,13 @@ public class Zoo {
 												.filter(e -> e.getCageNumber() == eagleCageNo)
 												.findFirst()
 												.orElse(null);
-					if (eagleCage != null) {
+					if (eagleCage.cageSize() > 0) {
 						System.out.println("Which one to tease: ");
-						eagleCage.getAnimals().forEach(eagle -> System.out.println(String.format("[%d] %s",eagle.getAnimalNo(),eagle.getName())));
+						eagleCage.getAnimals().entrySet().forEach(eagle -> System.out.println(String.format("[%d] %s",eagle.getValue().getAnimalNo(),eagle.getValue().getName())));
 						String name = input.nextLine();
 						
-						Animal eagle = eagleCage.getAnimals().stream()
-															.filter(eagleTease -> eagleTease.getName().equalsIgnoreCase(name))
+						Eagle eagle = (Eagle)eagleCage.getAnimals().entrySet().stream()
+															.filter(eagleTease -> eagleTease.getKey().equalsIgnoreCase(name))
 															.findFirst()
 															.orElse(null);
 						if(eagle != null) {

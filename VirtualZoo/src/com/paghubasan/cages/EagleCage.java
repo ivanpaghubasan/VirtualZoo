@@ -1,7 +1,9 @@
 package com.paghubasan.cages;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.paghubasan.animals.Eagle;
 import com.paghubasan.main.Animal;
@@ -12,7 +14,7 @@ public class EagleCage implements Cage {
 	private int number;
 	private int cageSelectionNo;
 	private static int cageCounter = 1;
-	private List<Eagle> eagles = new ArrayList<>();
+	private Map<String, Eagle> eagles = new HashMap<>();
 	
 	public EagleCage() {
 		this.name = "Eagle's Cage";
@@ -37,10 +39,8 @@ public class EagleCage implements Cage {
 	}
 
 	@Override
-	public Animal addAnimal(Animal animal) {
-		if (animal instanceof Eagle) {
-			eagles.add((Eagle)animal);
-		}
+	public <T> T addAnimal(T animal) {
+		eagles.put(((Eagle)animal).getName(), (Eagle)animal);
 		return animal;
 	}
 
@@ -62,8 +62,8 @@ public class EagleCage implements Cage {
 	}
 
 	@Override
-	public List<Animal> getAnimals() {
-		List<Animal> animals = new ArrayList<>(eagles);
+	public Map<String, Animal> getAnimals() {
+		Map<String, Animal> animals = new HashMap<>(eagles);
 		return animals;
 	}
 
