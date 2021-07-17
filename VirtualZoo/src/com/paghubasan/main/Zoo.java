@@ -1,9 +1,12 @@
 package com.paghubasan.main;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.logging.*;
 
 import com.paghubasan.animals.Crocodile;
 import com.paghubasan.animals.Eagle;
@@ -17,14 +20,17 @@ public class Zoo {
 	private static List<CrocodileCage> crocodiles = new ArrayList<>();
 	private static List<EagleCage> eagles = new ArrayList<>();
 	
-	public static void main(String[] args) throws VirtualZooException {
+	public static void main(String[] args) throws VirtualZooException, SecurityException, IOException {
 		displayMenu();
 	}
 	
-	public static void displayMenu() {
+	public static void displayMenu() throws SecurityException, IOException {
 		boolean isExit = false;
 		int choice;
+		Logger logger = virtualZooLog("log.txt");;
+		
 		do {
+			
 			System.out.println("*******WELCOME TO VIRTUAL ZOO*******");
 			System.out.println("Total number of cages = " + totalCages());
 			System.out.println();
@@ -35,6 +41,7 @@ public class Zoo {
 			System.out.println("[8] Show Zoo");
 			System.out.println("[9] Exit Zoo");
 			try {
+				
 				choice = Integer.parseInt(input.nextLine());
 				
 				switch(choice) {
@@ -57,9 +64,12 @@ public class Zoo {
 				}
 				
 			} catch (VirtualZooException ex) {
-				System.out.println(ex.getMessage());
+				//System.out.println(ex.getMessage());
+				logger.log(Level.WARNING, ex.getMessage());
+				
 			} catch (NumberFormatException ex) {
-				System.out.println("You must enter a numeric number. Please try again.\n");
+				//System.out.println("You must enter a numeric number. Please try again.\n");
+				logger.log(Level.WARNING, "You must enter a numeric number. Please try again.");
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				input.nextLine();
@@ -365,5 +375,20 @@ public class Zoo {
 	
 	private static int totalCages() {
 		return lions.size() + crocodiles.size() + eagles.size();
+	}
+
+	private static Logger virtualZooLog(String fileName) throws SecurityException, IOException {
+		File file = new File(fileName);
+		
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		
+		FileHandler fileHandler = new FileHandler(fileName, true);
+		Logger logger = Logger.getLogger("Virtual Zoo Logs");
+		logger.addHandler(fileHandler);
+		SimpleFormatter formatter = new SimpleFormatter();
+		fileHandler.setFormatter(formatter);
+		return logger;
 	}
 }
