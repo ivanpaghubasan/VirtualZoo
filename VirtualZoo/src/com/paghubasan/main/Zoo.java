@@ -3,9 +3,11 @@ package com.paghubasan.main;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.*;
 
@@ -20,6 +22,7 @@ public class Zoo {
 	private static List<LionCage> lions = new ArrayList<>();
 	private static List<CrocodileCage> crocodiles = new ArrayList<>();
 	private static List<EagleCage> eagles = new ArrayList<>();
+	private static Set<Visitor> visitors = new HashSet<>();
 	static AtomicInteger index;
 	
 	public static void main(String[] args) throws VirtualZooException, SecurityException, IOException {
@@ -29,7 +32,7 @@ public class Zoo {
 	public static void displayMenu() throws SecurityException, IOException {
 		boolean isExit = false;
 		int choice;
-		Logger logger = virtualZooLog("log.txt");;
+		Logger logger = null;
 		
 		do {
 			
@@ -45,7 +48,7 @@ public class Zoo {
 			System.out.println("[8] Show Zoo");
 			System.out.println("[9] Exit Zoo");
 			try {
-				
+				logger = virtualZooLog("logs.txt");
 				choice = Integer.parseInt(input.nextLine());
 				
 				switch(choice) {
@@ -529,8 +532,27 @@ public class Zoo {
 		
 	}
 	
-	private static void registerVisitor() {
+	private static void registerVisitor() throws VirtualZooException {
+		System.out.println("Please enter the visitor's name: ");
+		String name = input.nextLine();
 		
+		if (visitors.size() < 2) {
+			Visitor visitor = new Visitor();
+			visitor.setName(name);
+			
+			boolean isExist = visitors.stream()
+					.anyMatch(v -> v.getName().equalsIgnoreCase(name));
+					
+			
+			if (!isExist) {
+				visitors.add(visitor);
+				System.out.println(String.format("The visitor with name '%s' has been registered with the zoo.\n", visitor.getName()));
+			} else {
+				throw new VirtualZooException("The visitor has already registered. Please enter another name.\n");
+			}
+		} else {
+			throw new VirtualZooException("The visitor is full.\n");
+		}
 	}
 	
 	private static void showZoo() {
@@ -587,6 +609,7 @@ public class Zoo {
 		logger.addHandler(fileHandler);
 		SimpleFormatter formatter = new SimpleFormatter();
 		fileHandler.setFormatter(formatter);
+		fileHandler.close();
 		return logger;
 	}
 }
