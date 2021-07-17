@@ -34,4 +34,5 @@ public class Eagle extends Animal {
 		return animalNo;
 	}
 
+	
 }

@@ -67,4 +67,22 @@ public class EagleCage implements Cage {
 		return animals;
 	}
 
+	@Override
+	public <T> T removeAnimal(T t) {
+		// TODO Auto-generated method stub
+		return (T)eagles.remove(((Eagle)t).getName());
+	}
+
+	@Override
+	public <T> T tranferAnimal(T t) {
+		// TODO Auto-generated method stub
+		return (T)eagles.put(((Eagle)t).getName(), (Eagle)t);
+	}
+
+	@Override
+	public <T> T getAnimal(String name) {
+		// TODO Auto-generated method stub
+		return (T) eagles.get(name);
+	}
+
 }

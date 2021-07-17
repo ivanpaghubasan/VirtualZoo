@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.*;
 
 import com.paghubasan.animals.Crocodile;
@@ -19,6 +20,7 @@ public class Zoo {
 	private static List<LionCage> lions = new ArrayList<>();
 	private static List<CrocodileCage> crocodiles = new ArrayList<>();
 	private static List<EagleCage> eagles = new ArrayList<>();
+	static AtomicInteger index;
 	
 	public static void main(String[] args) throws VirtualZooException, SecurityException, IOException {
 		displayMenu();
@@ -38,6 +40,8 @@ public class Zoo {
 			System.out.println("[1] Add Animal to a Cage");
 			System.out.println("[2] Create New Cage");
 			System.out.println("[3] Tease Animal");
+			System.out.println("[4] Transfer Animal");
+			System.out.println("[5] Register Visitor");
 			System.out.println("[8] Show Zoo");
 			System.out.println("[9] Exit Zoo");
 			try {
@@ -53,6 +57,12 @@ public class Zoo {
 						break;
 					case 3:
 						teaseAnimal();
+						break;
+					case 4:
+						transferAnimal();
+						break;
+					case 5:
+						registerVisitor();
 						break;
 					case 8:
 						showZoo();
@@ -124,8 +134,9 @@ public class Zoo {
 				if (lions.size() == 0) {
 					System.out.println("No cage created yet. Please create a new cage.\n");
 				} else {
+					index = new AtomicInteger(1);
 					System.out.println("Please select a cage: ");
-					lions.forEach(lion -> System.out.println(String.format("[%d] Cage No. %d", lion.getCageNoSelection(),lion.getCageNumber())));
+					lions.forEach(lion -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),lion.getCageNumber())));
 					lionCageNo = Integer.parseInt(input.nextLine());
 					
 					LionCage lionCage = lions.stream()
@@ -160,8 +171,9 @@ public class Zoo {
 				if (crocodiles.size() == 0) {
 					System.out.println("No cage created yet. Please create a new cage.\n");
 				} else {
+					index = new AtomicInteger(1);
 					System.out.println("Please select a cage: ");
-					crocodiles.forEach(crocodile -> System.out.println(String.format("[%d] Cage No. %d", crocodile.getCageNoSelection(),crocodile.getCageNumber())));
+					crocodiles.forEach(crocodile -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),crocodile.getCageNumber())));
 					crocoCageNo = Integer.parseInt(input.nextLine());
 					
 					CrocodileCage crocodileCage = crocodiles.stream()
@@ -195,8 +207,9 @@ public class Zoo {
 				if (eagles.size() == 0) {
 					System.out.println("No cage created yet. Please create a new cage.\n");
 				} else {
+					index = new AtomicInteger(1);
 					System.out.println("Please select a cage: ");
-					eagles.forEach(eagle -> System.out.println(String.format("[%d] Cage No. %d", eagle.getCageNoSelection(),eagle.getCageNumber())));
+					eagles.forEach(eagle -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),eagle.getCageNumber())));
 					eagleCageNo = Integer.parseInt(input.nextLine());
 					
 					EagleCage eagleCage = eagles.stream()
@@ -242,8 +255,9 @@ public class Zoo {
 				if (lions.size() == 0) {
 					System.out.println("No cage created yet. Please create a new cage.\n");
 				} else {
+					index = new AtomicInteger(1);
 					System.out.println("Please select a cage: ");
-					lions.forEach(lion -> System.out.println(String.format("[%d] Cage No. %d", lion.getCageNoSelection(),lion.getCageNumber())));
+					lions.forEach(lion -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),lion.getCageNumber())));
 					lionCageNo = Integer.parseInt(input.nextLine());
 					
 					LionCage lionCage = lions.stream()
@@ -252,14 +266,12 @@ public class Zoo {
 											.orElse(null);
 					
 					if(lionCage != null && lionCage.cageSize() > 0) {
+						index = new AtomicInteger(1);
 						System.out.println("Which one to tease: ");
-						lionCage.getAnimals().entrySet().forEach((lion) -> System.out.println(String.format("[%d] %s",lion.getValue().getAnimalNo(),lion.getValue().getName())));
+						lionCage.getAnimals().entrySet().forEach((lion) -> System.out.println(String.format("[%d] %s",index.getAndIncrement(),lion.getValue().getName())));
 						String name = input.nextLine();
 						
-						Lion lion = (Lion)lionCage.getAnimals().entrySet().stream()
-														.filter(lionTease -> lionTease.getKey().equalsIgnoreCase(name))
-														.findFirst()
-														.orElse(null);
+						Lion lion = lionCage.getAnimal(name);
 						
 						if(lion != null) {
 							lion.tease();
@@ -276,8 +288,9 @@ public class Zoo {
 				if (crocodiles.size() == 0) {
 					System.out.println("No cage created yet. Please create a new cage.\n");
 				} else {
+					index = new AtomicInteger(1);
 					System.out.println("Please select a cage: ");
-					crocodiles.forEach(crocodile -> System.out.println(String.format("[%d] Cage No. %d", crocodile.getCageNoSelection(),crocodile.getCageNumber())));
+					crocodiles.forEach(crocodile -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),crocodile.getCageNumber())));
 					crocoCageNo = Integer.parseInt(input.nextLine());
 					
 					CrocodileCage crocodileCage = crocodiles.stream()
@@ -286,14 +299,12 @@ public class Zoo {
 															.orElse(null);
 					
 					if (crocodileCage != null && crocodileCage.cageSize() > 0) {
+						index = new AtomicInteger(1);
 						System.out.println("Which one to tease: ");
-						crocodileCage.getAnimals().entrySet().forEach(croco -> System.out.println(String.format("[%d] %s",croco.getValue().getAnimalNo(),croco.getValue().getName())));
+						crocodileCage.getAnimals().entrySet().forEach(croco -> System.out.println(String.format("[%d] %s",index.getAndIncrement(),croco.getValue().getName())));
 						String name = input.nextLine();
 						
-						Crocodile crocodile = (Crocodile)crocodileCage.getAnimals().entrySet().stream()
-																	.filter(crocoTease -> crocoTease.getKey().equalsIgnoreCase(name))
-																	.findFirst()
-																	.orElse(null);
+						Crocodile crocodile = crocodileCage.getAnimal(name);
 						
 						if(crocodile != null) {
 							crocodile.tease();
@@ -309,8 +320,9 @@ public class Zoo {
 				if (eagles.size() == 0) {
 					System.out.println("No cage created yet. Please create a new cage.\n");
 				} else {
+					index = new AtomicInteger(1);
 					System.out.println("Please select a cage: ");
-					eagles.forEach(eagle -> System.out.println(String.format("[%d] Cage No. %d", eagle.getCageNoSelection(),eagle.getCageNumber())));
+					eagles.forEach(eagle -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),eagle.getCageNumber())));
 					eagleCageNo = Integer.parseInt(input.nextLine());
 					
 					EagleCage eagleCage = eagles.stream()
@@ -319,14 +331,13 @@ public class Zoo {
 												.orElse(null);
 					
 					if (eagleCage != null && eagleCage.cageSize() > 0) {
+						index = new AtomicInteger(1);
 						System.out.println("Which one to tease: ");
-						eagleCage.getAnimals().entrySet().forEach(eagle -> System.out.println(String.format("[%d] %s",eagle.getValue().getAnimalNo(),eagle.getValue().getName())));
+						eagleCage.getAnimals().entrySet().forEach(eagle -> System.out.println(String.format("[%d] %s",index.getAndIncrement(),eagle.getValue().getName())));
 						String name = input.nextLine();
 						
-						Eagle eagle = (Eagle)eagleCage.getAnimals().entrySet().stream()
-															.filter(eagleTease -> eagleTease.getKey().equalsIgnoreCase(name))
-															.findFirst()
-															.orElse(null);
+						Eagle eagle = eagleCage.getAnimal(name);
+						
 						if(eagle != null) {
 							eagle.tease();
 						} else {
@@ -342,6 +353,186 @@ public class Zoo {
 		}
 	}
 	
+	private static void transferAnimal() throws VirtualZooException {
+		printAnimalToTransfer();
+		int animalType = Integer.parseInt(input.nextLine());
+		int lionCageNo, crocoCageNo, eagleCageNo;
+		
+		
+		switch(animalType) {
+			case 1:
+				if (lions.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
+				} else {
+					index = new AtomicInteger(1);
+					System.out.println("Please select a cage: ");
+					lions.forEach(lion -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),lion.getCageNumber())));
+					lionCageNo = Integer.parseInt(input.nextLine());
+					
+					LionCage lionCage = lions.stream()
+							.filter(c -> c.getCageNumber() == lionCageNo)
+							.findFirst()
+							.orElse(null);
+					
+					if (lionCage != null && lionCage.cageSize() > 0) {
+						index = new AtomicInteger(1);
+						System.out.println("Which one to transfer: ");
+						lionCage.getAnimals().entrySet().forEach((lion) -> System.out.println(String.format("[%d] %s",index.getAndIncrement(),lion.getValue().getName())));
+						String name = input.nextLine();
+						Lion lion = lionCage.getAnimal(name);
+						
+						if (lion != null) {
+							index = new AtomicInteger(1);
+							System.out.println("Please select a cage to transfer the animal to: ");
+							lions.forEach(l -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),l.getCageNumber())));
+							int cageNo = Integer.parseInt(input.nextLine());
+							
+							LionCage cageToTransfer = lions.stream()
+									.filter(c -> c.getCageNumber() == cageNo)
+									.findFirst()
+									.orElse(null);
+							
+							if (cageToTransfer.cageSize() < 2) {
+								// remove animal to the cage
+								lionCage.removeAnimal(lion);
+								
+								// transfer animal to another cage
+								cageToTransfer.tranferAnimal(lion);
+								
+								System.out.println(String.format("Transferred %s to %s No. %d\n", lion.getName(), cageToTransfer.getCageName(), cageToTransfer.getCageNumber()));
+								
+							} else {
+								// cage is full
+								throw new VirtualZooException(String.format("You cannot transfer %s to %s No. %d. The cage is full.\n", name, cageToTransfer.getCageName(), cageToTransfer.getCageNumber()));
+							}
+						} else {
+							throw new VirtualZooException("Please enter a valid animal name. Please try again.\n");
+						}
+						
+					} else {
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
+					}
+				}
+				break;
+			case 2:
+				if (crocodiles.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
+				} else {
+					index = new AtomicInteger(1);
+					System.out.println("Please select a cage: ");
+					crocodiles.forEach(eagle -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),eagle.getCageNumber())));
+					crocoCageNo = Integer.parseInt(input.nextLine());
+					
+					CrocodileCage crocoCage = crocodiles.stream()
+							.filter(c -> c.getCageNumber() == crocoCageNo)
+							.findFirst()
+							.orElse(null);
+					
+					if (crocoCage != null && crocoCage.cageSize() > 0) {
+						index = new AtomicInteger(1);
+						System.out.println("Which one to transfer: ");
+						crocoCage.getAnimals().entrySet().forEach((croco) -> System.out.println(String.format("[%d] %s",index.getAndIncrement(),croco.getValue().getName())));
+						String name = input.nextLine();
+						Crocodile croco = crocoCage.getAnimal(name);
+						
+						if (croco != null) {
+							index = new AtomicInteger(1);
+							System.out.println("Please select a cage to transfer the animal to: ");
+							crocodiles.forEach(l -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),l.getCageNumber())));
+							int cageNo = Integer.parseInt(input.nextLine());
+							
+							CrocodileCage cageToTransfer = crocodiles.stream()
+									.filter(c -> c.getCageNumber() == cageNo)
+									.findFirst()
+									.orElse(null);
+							
+							if (cageToTransfer.cageSize() < 2) {
+								// remove animal to the cage
+								crocoCage.removeAnimal(croco);
+								
+								// transfer animal to another cage
+								cageToTransfer.tranferAnimal(croco);
+								
+								System.out.println(String.format("Transferred %s to %s No. %d\n", croco.getName(), cageToTransfer.getCageName(), cageToTransfer.getCageNumber()));
+								
+							} else {
+								// cage is full
+								throw new VirtualZooException(String.format("You cannot transfer %s to %s No. %d. The cage is full.\n", name, cageToTransfer.getCageName(), cageToTransfer.getCageNumber()));
+							}
+						} else {
+							throw new VirtualZooException("Please enter a valid animal name. Please try again.\n");
+						}
+						
+					} else {
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
+					}
+					
+				}
+				break;
+			case 3:
+				if (eagles.size() == 0) {
+					System.out.println("No cage created yet. Please create a new cage.\n");
+				} else {
+					index = new AtomicInteger(1);
+					System.out.println("Please select a cage: ");
+					eagles.forEach(eagle -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),eagle.getCageNumber())));
+					eagleCageNo = Integer.parseInt(input.nextLine());
+					
+					EagleCage eagleCage = eagles.stream()
+							.filter(e -> e.getCageNumber() == eagleCageNo)
+							.findFirst()
+							.orElse(null);
+					
+					if (eagleCage != null && eagleCage.cageSize() > 0) {
+						index = new AtomicInteger(1);
+						System.out.println("Which one to transfer: ");
+						eagleCage.getAnimals().entrySet().forEach((eagle) -> System.out.println(String.format("[%d] %s",index.getAndIncrement(),eagle.getValue().getName())));
+						String name = input.nextLine();
+						Eagle eagle = eagleCage.getAnimal(name);
+						
+						if (eagle != null) {
+							index = new AtomicInteger(1);
+							System.out.println("Please select a cage to transfer the animal to: ");
+							crocodiles.forEach(l -> System.out.println(String.format("[%d] Cage No. %d", index.getAndIncrement(),l.getCageNumber())));
+							int cageNo = Integer.parseInt(input.nextLine());
+							
+							EagleCage cageToTransfer = eagles.stream()
+									.filter(e -> e.getCageNumber() == cageNo)
+									.findFirst()
+									.orElse(null);
+							
+							if (cageToTransfer.cageSize() < 2) {
+								// remove animal to the cage
+								eagleCage.removeAnimal(eagle);
+								
+								// transfer animal to another cage
+								cageToTransfer.tranferAnimal(eagle);
+								
+								System.out.println(String.format("Transferred %s to %s No. %d\n", eagle.getName(), cageToTransfer.getCageName(), cageToTransfer.getCageNumber()));
+								
+							} else {
+								// cage is full
+								throw new VirtualZooException(String.format("You cannot transfer %s to %s No. %d. The cage is full.\n", name, cageToTransfer.getCageName(), cageToTransfer.getCageNumber()));
+							}
+						} else {
+							throw new VirtualZooException("Please enter a valid animal name. Please try again.\n");
+						}
+						
+					} else {
+						throw new VirtualZooException("Please enter a valid cage number. Please try again.\n");
+					}
+				}
+				break;
+			default:
+				throw new VirtualZooException("Please select a valid animal type. Please try again.\n");
+		}
+		
+	}
+	
+	private static void registerVisitor() {
+		
+	}
+	
 	private static void showZoo() {
 		if (totalCages() == 0) {
 			System.out.println("Nothing to show. The zoo has no cage and no animals.\n");
@@ -350,6 +541,13 @@ public class Zoo {
 			crocodiles.forEach(croco -> croco.totalAnimals());
 			eagles.forEach(eagle -> eagle.totalAnimals());
 		}
+	}
+	
+	private static void printAnimalToTransfer() {
+		System.out.println("Please select an animal to transfer: ");
+		System.out.println("[1] Lion");
+		System.out.println("[2] Crocodile");
+		System.out.println("[3] Eagle");
 	}
 	
 	private static void printCageTypes() {

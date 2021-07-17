@@ -61,5 +61,24 @@ public class LionCage implements Cage {
 		return lions.size();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T removeAnimal(T t) {
+		return (T) lions.remove(((Lion)t).getName());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T tranferAnimal(T t) {
+		return (T) lions.put(((Lion)t).getName(), (Lion) t);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getAnimal(String name) {
+		// TODO Auto-generated method stub
+		return (T) lions.get(name);
+	}
+
 
 }

@@ -14,4 +14,7 @@ public interface Cage {
 	public int getCageNoSelection();
 	public int cageSize();
 	public Map<String, Animal> getAnimals();
+	public <T> T removeAnimal(T t);
+	public <T> T tranferAnimal(T t);
+	public <T> T getAnimal(String name);
 }

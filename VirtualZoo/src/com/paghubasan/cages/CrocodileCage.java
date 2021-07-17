@@ -69,4 +69,25 @@ public class CrocodileCage implements Cage {
 		return animals;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T removeAnimal(T t) {
+		// TODO Auto-generated method stub
+		return (T) crocodiles.remove(((Crocodile)t).getName());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T tranferAnimal(T t) {
+		// TODO Auto-generated method stub
+		return (T) crocodiles.put(((Crocodile)t).getName(), (Crocodile)t);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getAnimal(String name) {
+		// TODO Auto-generated method stub
+		return (T)crocodiles.get(name);
+	}
+
 }
